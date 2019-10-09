@@ -1,0 +1,33 @@
+
+%{
+#include <stdio.h>
+#include <stdlib.h>
+#include <iostream>
+using namespace std;
+%}
+
+%option noyywrap
+%option namespace=yy lexer=Lexer lex=yylex
+
+%x quote
+%x Quote
+
+%%
+
+[ ][\"]		{cout<<"&ldquo"; start(Quote); }
+[ ][\']		{cout<<"&ldquo"; start(quote); }
+
+<Quote>[^"]		{ echo(); }
+<quote>[^']		{ echo(); }
+<Quote>[\"] 	{cout<<"&rdquo"; start(INITIAL); }
+<quote>[\'] 	{cout<<"&rdquo"; start(INITIAL); }
+.			{echo();}
+
+
+
+%%
+int main(int argc, char **argv) {
+     yy::Lexer().yylex();
+     cout << "\n";
+     exit(0);
+}
